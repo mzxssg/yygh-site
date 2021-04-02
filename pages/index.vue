@@ -53,7 +53,7 @@
                   <div class="hospital-title"> {{ item.hosname }}</div>
                   <div class="bottom-container">
                     <div class="icon-wrapper">
-                      <span class="iconfont"></span>{{ item.param.hostypeString }}
+                      <span class="iconfont"></span>{{ item.param.hostype }}
                     </div>
                     <div class="icon-wrapper">
                       <span class="iconfont"></span>每天{{ item.bookingRule.releaseTime }}放号
@@ -148,37 +148,39 @@
 </template>
 
 <script>
-// import hospitalApi from '@/api/hosp/hospital'
-// import dictApi from '@/api/cmn/dict'
+import hospApi from '@/api/hosp/'
+import dictApi from '@/api/dict'
 export default {
-  // // asyncData：渲染组件之前异步获取数据
-  // asyncData({ params, error }) {
-  //   return hospitalApi.getPageList(1, 10, null).then(response => {
-  //     console.log(response.data);
-  //     return {
-  //       list: response.data.content,
-  //       pages : response.data.totalPages
-  //     }
-  //   });
-  // },
-  // data() {
-  //   return {
-  //     searchObj: {},
-  //     page: 1,
-  //     limit: 10,
+  // asyncData：渲染组件之前异步获取数据
+  //服务端渲染异步，显示医院列表
+  asyncData({ params, error }) {
+    //调用
+    return hospApi.getPageList(1, 10, null).then(response => {
+      console.log(response.data);
+      return {
+        list: response.data.content,
+        pages : response.data.totalPages
+      }
+    });
+  },
+  data() {
+    return {
+      searchObj: {},
+      page: 1,
+      limit: 10,
 
-  //     hosname: '',
-  //     hostypeList: [],
-  //     districtList: [],
+      hosname: '',
+      hostypeList: [],
+      districtList: [],
 
-  //     hostypeActiveIndex: 0,
-  //     provinceActiveIndex: 0
-  //   }
-  // },
+      hostypeActiveIndex: 0,
+      provinceActiveIndex: 0
+    }
+  },
 
-  // created() {
-  //   this.init()
-  // },
+  created() {
+    this.init()
+  },
 
   // mounted() {
   //   document.getElementById("search").style.display = 'none';
@@ -192,23 +194,29 @@ export default {
   //   window.removeEventListener('scroll', this.load, false)
   // },
 
-  // methods: {
-  //   init() {
-  //     dictApi.findByDictCode("Hostype").then(response => {
-  //       this.hostypeList = []
-  //       this.hostypeList.push({"name":"全部", "value":""})
-  //       for(let i in response.data){
-  //         this.hostypeList.push(response.data[i]);
-  //       }
-  //     })
-  //     dictApi.findByDictCode('Beijin').then(response => {
-  //       this.districtList = []
-  //       this.districtList.push({"name":"全部", "value":""})
-  //       for(let i in response.data){
-  //         this.districtList.push(response.data[i]);
-  //       }
-  //     })
-  //   },
+  methods: {
+    //查询医院等级列表 和 所有地区列表
+    init() {
+      //查询医院等级列表
+      dictApi.findByDictCode("Hostype").then(response => {
+        //hostypeList清空
+        this.hostypeList = [];
+        //向hostypeList添加全部值
+        this.hostypeList.push({"name":"全部", "value":""});
+        //把接口返回数据，添加到hostypeList
+        for(let i in response.data){
+          this.hostypeList.push(response.data[i]);
+        }
+      });
+      //查询地区信息
+      dictApi.findByDictCode('Beijin').then(response => {
+        this.districtList = []
+        this.districtList.push({"name":"全部", "value":""});
+        for(let i in response.data){
+          this.districtList.push(response.data[i]);
+        }
+      })
+    },
 
   //   load(event) {
   //     // 滚动条高度为430 页面搜索消失，头部搜索显示
@@ -226,50 +234,59 @@ export default {
   //     }
   //   },
 
-  //   getList() {
-  //     hospitalApi.getPageList(this.page, this.limit, this.searchObj).then(response => {
-  //       for(let i in response.data.content){
-  //         this.list.push(response.data.content[i]);
-  //       }
-  //       this.pages = response.data.totalPages
-  //     })
-  //   },
+    //查询医院列表
+    getList() {
+      hospApi.getPageList(this.page, this.limit, this.searchObj).then(response => {
+        for(let i in response.data.content){
+          this.list.push(response.data.content[i]);
+        }
+        this.pages = response.data.totalPages
+      })
+    },
 
-  //   querySearchAsync(queryString, cb) {
-  //     this.searchObj = []
-  //     if(queryString == '') return
-  //     hospitalApi.getByHosname(queryString).then(response => {
-  //       for (let i = 0, len = response.data.length; i < len; i++) {
-  //         response.data[i].value = response.data[i].hosname
-  //       }
-  //       cb(response.data)
-  //     })
-  //   },
+    //在输入框输入值，弹出下拉框，显示相关内容
+    querySearchAsync(queryString, cb) {
+      this.searchObj = []
+      if(queryString == '') return
+      hospApi.getByHosname(queryString).then(response => {
+        for (let i = 0, len = response.data.length; i < len; i++) {
+          response.data[i].value = response.data[i].hosname
+        }
+        cb(response.data)
+      })
+    },
 
-  //   handleSelect(item) {
-  //     window.location.href = '/hospital/' + item.hoscode
-  //   },
+    //在下拉框选择某一个内容，执行下面方法，跳转到详情页面中
+    handleSelect(item) {
+      window.location.href = '/hospital/' + item.hoscode
+    },
 
-  //   hostypeSelect(hostype, index) {
-  //     this.list = []
-  //     this.page = 1
-  //     this.hostypeActiveIndex = index
-  //     this.searchObj.hostype = hostype
-  //     this.getList();
-  //   },
+    //根据医院等级查询
+    hostypeSelect(hostype, index) {
+      //清空list中的数据
+      this.list = [];
+      this.page = 1;
+      this.hostypeActiveIndex = index;
+      this.searchObj.hostype = hostype;
+      //调用查询医院列表方法
+      this.getList();
+    },
 
-  //   districtSelect(districtCode, index) {
-  //     this.list = []
-  //     this.page = 1
-  //     this.provinceActiveIndex = index
-  //     this.searchObj.districtCode = districtCode
-  //     this.getList();
-  //   },
+    //根据地区查询医院
+    districtSelect(districtCode, index) {
+      this.list = [];
+      this.page = 1;
+      this.provinceActiveIndex = index;
+      this.searchObj.districtCode = districtCode;
+      //调用查询医院列表方法
+      this.getList();
+    },
 
-  //   show(hoscode) {
-  //     window.location.href = '/hospital/' + hoscode
-  //   }
-  // }
+    //点击某个医院的名称，跳转到详情页面中
+    show(hoscode) {
+      window.location.href = '/hospital/' + hoscode
+    }
+  }
 }
 </script>
 
