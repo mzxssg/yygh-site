@@ -256,11 +256,6 @@ export default {
       })
     },
 
-    //在下拉框选择某一个内容，执行下面方法，跳转到详情页面中
-    handleSelect(item) {
-      window.location.href = '/hospital/' + item.hoscode
-    },
-
     //根据医院等级查询
     hostypeSelect(hostype, index) {
       //清空list中的数据
@@ -282,9 +277,14 @@ export default {
       this.getList();
     },
 
+    //在下拉框选择某一个内容，执行下面方法，跳转到详情页面中
+    handleSelect(item) {
+      window.location.href = '/hosp/' + item.hoscode
+    },
+
     //点击某个医院的名称，跳转到详情页面中
     show(hoscode) {
-      window.location.href = '/hospital/' + hoscode
+      window.location.href = '/hosp/' + hoscode
     }
   }
 }

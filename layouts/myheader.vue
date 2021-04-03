@@ -117,7 +117,7 @@
 
 // import userInfoApi from '@/api/user/userInfo'
 // import smsApi from '@/api/sms/sms'
-// import hospitalApi from '@/api/hosp/hospital'
+// import hospitalApi from '@/api/hosp/hosp'
 // import weixinApi from '@/api/user/weixin'
 
 // const defaultDialogAtrr = {
@@ -333,7 +333,7 @@ export default {
   //   },
 
   //   handleSelect(item) {
-  //     window.location.href = '/hospital/' + item.hoscode
+  //     window.location.href = '/hosp/' + item.hoscode
   //   },
 
   //   weixinLogin() {
