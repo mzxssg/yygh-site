@@ -95,7 +95,7 @@
 import '~/assets/css/hospital_personal.css'
 import '~/assets/css/hospital.css'
 
-// import cookie from 'js-cookie'
+import cookie from 'js-cookie'
 import hospApi from '@/api/hosp'
 // import userInfoApi from '@/api/user'
 
@@ -138,14 +138,14 @@ export default {
       document.getElementById(depcode).scrollIntoView();
     },
 
-    // schedule(depcode) {
-    //   debugger
-    //   // 登录判断
-    //   let token = cookie.get('token')
-    //   if (!token) {
-    //     loginEvent.$emit('loginDialogEvent')
-    //     return
-    //   }
+    schedule(depcode) {
+      debugger
+      // 登录判断
+      let token = cookie.get('token')
+      if (!token) {
+        loginEvent.$emit('loginDialogEvent')
+        return
+      }
 
       // //判断认证
       // userInfoApi.getUserInfo().then(response => {
@@ -157,8 +157,8 @@ export default {
       //   }
       // })
 
-      // window.location.href = '/hosp/schedule?hoscode=' + this.hospital.hoscode + "&depcode=" + depcode
+      window.location.href = '/hosp/schedule?hoscode=' + this.hospital.hoscode + "&depcode=" + depcode
     }
-
+  }
 }
 </script>
