@@ -117,7 +117,7 @@ import Vue from 'vue'
 import userInfoApi from '@/api/userInfo'
 import smsApi from '@/api/msm'
 import hospitalApi from '@/api/hosp'
-// import weixinApi from '@/api/weixin'
+import weixinApi from '@/api/weixin'
 
 const defaultDialogAtrr = {
   showLoginType: 'phone', // 控制手机登录与微信登录切换
@@ -164,31 +164,33 @@ export default {
     })
     // 触发事件，显示登录层：loginEvent.$emit('loginDialogEvent')
 
-    // //初始化微信js
-    // const script = document.createElement('script')
-    // script.type = 'text/javascript'
-    // script.src = 'https://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js'
-    // document.body.appendChild(script)
-    //
-    // // 微信登录回调处理
-    // let self = this;
-    // window["loginCallback"] = (name,token, openid) => {
-    //   debugger
-    //   self.loginCallback(name, token, openid);
-    // }
+    //初始化微信js
+    const script = document.createElement('script')
+    script.type = 'text/javascript'
+    script.src = 'https://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js'
+    document.body.appendChild(script)
+
+    // 微信登录回调处理
+    let self = this;
+    window["loginCallback"] = (name,token, openid) => {
+      debugger
+      self.loginCallback(name, token, openid);
+    }
   },
 
   methods: {
-    // loginCallback(name, token, openid) {
-    //   // 打开手机登录层，绑定手机号，改逻辑与手机登录一致
-    //   if(openid != '') {
-    //     this.userInfo.openid = openid
-    //
-    //     this.showLogin()
-    //   } else {
-    //     this.setCookies(name, token)
-    //   }
-    // },
+    //微信回调的方法
+    loginCallback(name, token, openid) {
+      // 打开手机登录层，绑定手机号，改逻辑与手机登录一致
+      if(openid != '') {
+        this.userInfo.openid = openid
+        window.location.reload()
+        this.setCookies(name,token)
+        // this.showLogin()
+      } else {
+        this.setCookies(name, token)
+      }
+    },
 
     // 绑定登录或获取验证码按钮
     btnClick() {
