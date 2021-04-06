@@ -3,6 +3,7 @@ import request from '@/utils/request'
 const api_name = `/api/user`
 
 export default {
+  //手机登录
   login(userInfo) {
     return request({
       url: `${api_name}/login`,
@@ -11,6 +12,7 @@ export default {
     })
   },
 
+  //根据userid获取用户信息
   getUserInfo() {
     return request({
       url: `${api_name}/auth/getUserInfo`,
@@ -18,11 +20,12 @@ export default {
     })
   },
 
-  saveUserAuah(userAuah) {
+  //用户认证
+  saveUserAuth(userAuth) {
     return request({
-      url: `${api_name}/auth/userAuah`,
+      url: `${api_name}/auth/userAuth`,
       method: 'post',
-      data: userAuah
+      data: userAuth
     })
   }
 }
